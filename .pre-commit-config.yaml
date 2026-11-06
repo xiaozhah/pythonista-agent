@@ -1,0 +1,37 @@
+# Run `pre-commit install` once; checks then run on every commit.
+# Tools come from the dev environment (see README: Development).
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff lint
+        entry: ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        types: [python]
+        pass_filenames: false

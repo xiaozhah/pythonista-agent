@@ -1,0 +1,20 @@
+# temp / cache
+__pycache__/
+*.pyc
+*.pycoder-tmp
+*.tmp
+*.tmp-bridge
+.DS_Store
+.Trash/
+
+# bridge secret token and device addresses
+.bridge/token
+.bridge/hosts/
+
+# pycoder sessions and checkpoints, per device
+.pycoder/
+
+# tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/

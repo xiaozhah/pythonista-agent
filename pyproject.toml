@@ -1,0 +1,77 @@
+[project]
+name = "pycoder"
+version = "0.3.0"
+description = "An agentic coding assistant that runs inside Pythonista on iOS"
+readme = "README.md"
+license = "MIT"
+# Pythonista 3.4 ships Python 3.10; keep the code runnable there
+requires-python = ">=3.10"
+dependencies = ["requests", "markdown", "pygments"]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+    "pre-commit",
+    "pillow",
+    "types-requests",
+    "types-Markdown",
+    "types-Pygments",
+    "numpy",         # Pythonista bundles it; tests compare pycoder.host.accelerate against it
+    "ppci==0.5.8",   # run_c's C compiler, installed on first use in Pythonista
+    "jedi==0.19.2",  # python_code, installed on first use in a folder of its own
+    "pyflakes==3.4.0",  # likewise
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+extend-exclude = ["stubs"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "B",        # bugbear
+    "UP",       # pyupgrade
+    "SIM",      # simplify
+    "RUF",      # ruff-specific
+    "C4",       # comprehensions
+    "PT",       # pytest style
+]
+ignore = [
+    "RUF001", "RUF002", "RUF003",  # non-ASCII punctuation in user-facing strings is intended
+    "SIM105",                      # explicit try/except/pass reads fine
+    "UP031",                       # %-formatting is fine where an f-string would get unwieldy
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]
+"pycoder/frontends/chat/page.py" = ["E501"]  # CSS and JS kept one rule per line
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "stubs"
+files = ["pycoder", "tests", "dev", "tutorial", "install.py"]
+exclude = ["tutorial/event-horizon/"]  # given to the projects as they are
+strict = true
+warn_unreachable = true
+# Pythonista-only modules are described by the stubs in stubs/
+
+[[tool.mypy.overrides]]
+module = ["ppci.*", "jedi.*", "pyflakes.*"]  # untyped; host/cwasm/fixes.py patches its internals
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
